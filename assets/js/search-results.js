@@ -8,6 +8,11 @@ var Search = [];
 function getParams() {
     // Get the search params out of the URL (i.e. `?q=london&format=photo`) and convert it to an array (i.e. ['?q=london', 'format=photo'])
     var searchParams = document.location.search.split('=').pop();
+
+
+
+    searchParams =decodeURIComponent(searchParams)
+
     console.log(searchParams)
     
     saveFirstSearch(searchParams)
@@ -169,7 +174,17 @@ function saveFirstSearch(searchParams){
 
         displaySearch()
        
-       
+    }else {
+    
+        localStorage.setItem("Search", JSON.stringify(oldSearch))
+        if (!oldSearch.includes(searchParams)) {
+            console.log("inside", searchParams)
+            oldSearch.push(searchParams)
+           localStorage.setItem("Search", JSON.stringify(oldSearch))
+           displaySearch()
+        }
+        
+
     }
 }
 
@@ -182,24 +197,8 @@ formInputEl.addEventListener('submit', function(event) {
     
     var formInputVal = document.querySelector(".city-input").value;  
     console.log(formInputVal)
-    
-    if (!formInputVal) {
-          return;
-    }
-    var oldSearch = []   
-    oldSearch = JSON.parse(localStorage.getItem("Search"));
-    console.log(oldSearch)
-    
-    if (oldSearch.includes(formInputVal)) {
-        console.log(oldSearch.includes(formInputVal))
-        
-    }else{
-         oldSearch.push(formInputVal)
-        localStorage.setItem("Search", JSON.stringify(oldSearch))
-        displaySearch()
-        
-    }
-   searchApi(formInputVal)
+    saveFirstSearch(formInputVal);
+    searchApi(formInputVal)
     
 })
     
